@@ -1,0 +1,19 @@
+{
+	"name": "Roblox Message Reader",
+	"Description": "Gets a list of read and unread messages from your roblox inbox, and allows basic searching.",
+	"version": "0.0.7",
+	"icons": {
+		"48": "icon.ico",
+		"128": "icon.ico"
+	},
+	"browser_action": {
+		"default_icon": "icon.ico",
+		"popup": "popup.html"
+	},
+   "background_page": "background.html",
+	"permissions": [
+		"http://www.roblox.com/",
+		"tabs"
+	],
+	"run_at" : "document_start"
+}

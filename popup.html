@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="markdown.css" />
+		<link rel="stylesheet" type="text/css" href="jquery.mobile-1.0b3\jquery.mobile-1.0b3.min.css" />
+		<script src="jquery.js"></script>
+		<script src="jquery.mobile-1.0b3\jquery.mobile-1.0b3.min.js"></script>
+		<script src="markdown.js"></script>
+		<style>
+			.loading {
+				background: url(loading.gif) no-repeat 50% 50%;
+				text-align: center;
+			}
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: Arial, sans-serif;
+				width: 400px;
+				height: 600px;
+				overflow-x:hidden;overflow-y:auto;
+			}
+		</style>
+		<script>
+		$(function() {
+			var bkg = chrome.extension.getBackgroundPage();
+			$('a').live('click', function(){
+				var url = $(this).attr('href');
+				bkg.goTo(url);
+				window.close();
+			});
+			bkg.getMessages(function(messages) {
+				var list = $('#info ul');
+				var lastDate = null;
+				$.each(messages, function() {
+					var message = this;
+					var contentWrapper = $('<div />').addClass('content');
+					var messageElement;
+					
+					if(this.date != lastDate) {
+						list.append('<li data-role="list-divider">'+this.date+'</li>');
+						lastDate = this.date;
+					}
+					
+					messageElement = $('<li />')
+						.addClass('message')
+						.attr('data-theme', message.read ? 'c' : 'e')
+						.append(
+							$('<a />').attr('href', this.getURL()).text(this.title).append(
+								/*$('<span />')
+									.addClass('toggle')
+									.text('load')
+									.one('click', function() {
+										message.loadContent(function(content) {
+											console.log(message);
+											content.forEach(function(c) {
+												$('<section />').addClass('markdown')
+													.html(markdown.toHTML(c))
+													.appendTo(contentWrapper);
+											});
+										});
+										$(this).remove();
+										messageElement.append(contentWrapper).append($('<footer />').text(message.date));
+									}),*/
+								'<p class="ui-li-aside" style="width:auto"><strong>' + this.from.name + '</strong></p>'
+							)
+						).appendTo(list);
+				});
+				$(list).listview('refresh');
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<span id="count"></span>
+		<div data-role="content">
+			<div class="content-primary" id="info">
+				<ul data-role="listview" data-filter="true" data-filter-theme="b">
+				</ul>
+			<div>
+		</div>
+	</body>
+</html>
