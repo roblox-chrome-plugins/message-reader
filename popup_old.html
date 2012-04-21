@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="markdown.css" />
+		<script src="jquery.js"></script>
+		<script src="markdown.js"></script>
+		<style>
+			body {
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 14px;
+			}
+			.alert {
+				display: block;
+				-webkit-box-sizing: border-box;
+				padding: 2px;
+				padding-left: 20px;
+				height: 20px;
+				background: url(http://www.roblox.com/css/rbx2/images/head_infobox_icons.png) no-repeat 0px;
+				background-repeat: no-repeat;
+				float: left;
+				width: 50%;
+				text-decoration: none;
+				font-weight: bold
+			}
+			
+			#info {
+				padding-right: 20px;
+			}
+			
+			.loading {
+				background: url(loading.gif) no-repeat 50% 50%;
+				line-height: 40px;
+				height: 100%;
+				text-align: center;
+			}
+			body {
+				margin: 0;
+				padding: 0;
+				font-family: Arial, sans-serif;
+				width: 600px;
+				overflow-x:hidden;overflow-y:auto;
+			}
+			.message {
+				border: 1px solid #c0c0c0;
+				margin: 1px;
+				border-radius: 2px;
+			}
+			.message header {
+				background-image: -webkit-linear-gradient(top, rgb(253, 253, 253), rgb(238, 238, 238));
+				padding: 2px;
+				color: #404040;
+			}
+			.message header .title{
+				font-weight: bold;
+				display: block;
+			}
+			.message header .sender{
+				display: block;
+			}
+			.message header .toggle{
+				float: right;
+				color: #FF8000;
+				cursor: pointer;
+			}
+			.message .content {
+				border-top: 1px solid #c0c0c0;
+				padding: 2px;
+			}
+			.message footer {
+				text-align: right;
+				font-color: gray;
+				font-size: 75%;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="info">
+			<script>
+				var bkg = chrome.extension.getBackgroundPage();
+				$('a').live('click',function(){
+					var url = $(this).attr('href');
+					bkg.goToAlertPage(url);
+					window.close();
+				});
+				/*function updatePage() {
+					bkg.getMessages(console.log);
+				}*/
+				bkg.getMessages(function(messages) {
+					$.each(messages, function() {
+						var message = this;
+						var contentWrapper = $('<div />').addClass('content');
+						var messageElement;
+						messageElement = $('<article />')
+							.addClass('message')
+							.addClass(message.read ? 'read' : 'unread')
+							.append(
+								$('<header />')
+									.append(
+										$('<span />').addClass('title').text(this.title),
+										$('<span />').addClass('sender').text(this.from.name),
+										$('<span />')
+											.addClass('toggle')
+											.text('load')
+											.one('click', function() {
+												message.loadContent(function(content) {
+													console.log(message);
+													content.forEach(function(c) {
+														$('<section />').addClass('markdown')
+															.html(markdown.toHTML(c))
+															.appendTo(contentWrapper);
+													});
+												});
+												$(this).remove();
+												messageElement.append(contentWrapper).append($('<footer />').text(message.date));
+											})
+									)
+							).appendTo($('#info'));
+					});
+				});
+			</script>
+		</div>
+	</body>
+</html>

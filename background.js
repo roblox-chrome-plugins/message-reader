@@ -6,13 +6,20 @@ function Message(data) {
 	this.title = data[1];
 	this.id = +data[3];
 	this.read = data[5] === 'false';
-	this.date = data[2];
-	if(this.date.match(/\d+:\d+/))
-		this.date = "Today";
+
+	this.textDate = data[2];
+	if(this.textDate.match(/\d+:\d+/))
+		this.textDate = "Today";
+
 }
 Message.prototype.getURL = function() {
 	return 'http://www.roblox.com/My/PrivateMessage.aspx?MessageID=' + this.id + '&from=Inbox';
 };
+
+Message.prototype.getDate = function() {
+	return this.textDate;
+};
+
 Message.prototype.loadContent = function(callback) {
 	var that = this;
 	if(that.content === undefined) {
@@ -20,6 +27,11 @@ Message.prototype.loadContent = function(callback) {
 			var body = $(html).find('#pBody');
 			body.find('br').replaceWith('\n');
 			that.content = body.text().split('------------------------------');
+
+			
+			that.date 
+			
+
 			console.log(that.content);
 			callback(that.content);
 		});
@@ -57,4 +69,11 @@ function goTo(url) {
 		else
 			chrome.tabs.create({url: url});
 	});
+
 }
+wrappedDB.open('Roblox', 'messages', function() {
+	getMessages(function(messages) {
+		
+	});
+});
+
